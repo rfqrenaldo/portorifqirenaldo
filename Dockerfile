@@ -9,11 +9,14 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm ci -f
-
+RUN npm install -g vite
 
 # Copy source code
 COPY . .
-run npm install -g vite
+
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
 # Build the application
 RUN npm run build
 
