@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "3000:3000" #ini kalau mau deploy project lain tidak boleh  3000:3000 tapi 3001:3000 . kalau yang di belakang diganti sesuai kebutuhan framewrok 
     environment:
       - NODE_ENV=production
     restart: unless-stopped
