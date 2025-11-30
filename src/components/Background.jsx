@@ -63,7 +63,6 @@ const AnimatedBackground = () => {
 					className="absolute -bottom-10 right-20 w-96 h-96 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 md:opacity-10 hidden sm:block"
 					style={{ backgroundColor: '#6D5D6E' }}></div>
 			</div>
-			<div className="absolute inset-0 bg-[linear-gradient(to_right,#F4EEE010_1px,transparent_1px),linear-gradient(to_bottom,#F4EEE010_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 		</div>
 	)
 }

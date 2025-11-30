@@ -10,7 +10,7 @@ const Navbar = () => {
         { href: "#Home", label: "Home" },
         { href: "#About", label: "About" },
         { href: "#Portofolio", label: "Portofolio" },
-        { href: "#Contact", label: "Contact" },
+        { href: "#contact", label: "Contact" },
     ];
 
     useEffect(() => {
@@ -84,7 +84,7 @@ const Navbar = () => {
                             onClick={(e) => scrollToSection(e, "#Home")}
                             className="text-xl font-bold bg-gradient-to-r from-[#6D5D6E] to-[#F4EEE0] bg-clip-text text-transparent"
                         >
-                            R.Aldo
+                            Rifqi Renaldo
                         </a>
                     </div>
         

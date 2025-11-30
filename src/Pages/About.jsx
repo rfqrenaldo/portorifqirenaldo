@@ -20,9 +20,9 @@ const Header = memo(() => (
       data-aos="zoom-in-up"
       data-aos-duration="800"
     >
-      <Sparkles className="w-5 h-5 text-purple-400" />
+      
       Transforming ideas into digital experiences
-      <Sparkles className="w-5 h-5 text-purple-400" />
+
     </p>
   </div>
 ));
@@ -50,6 +50,8 @@ const ProfileImage = memo(() => (
           <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 via-transparent to-blue-500/20 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 hidden sm:block" />
           
           <img
+            // Ganti path gambar ini dengan path gambar Anda yang sebenarnya, contohnya:
+            // src="/images/rifqi_profile.jpg" 
             src="/photoo.jpeg"
             alt="Profile"
             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
@@ -115,11 +117,13 @@ const StatCard = memo(({ icon: Icon, color, value, label, description, animation
 const AboutPage = () => {
   // Memoized calculations
   const { totalProjects, totalCertificates, YearExperience } = useMemo(() => {
+    // NOTE: Ini hanya placeholder. Pastikan Anda memiliki logika untuk mendapatkan data ini.
+    // Jika data tidak ada di localStorage, nilainya akan 0 atau sesuai fallback.
     const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
     const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]");
     
     // Set experience to 2+ years (started around late 2022)
-    const startDate = new Date("2023-09-01");
+    const startDate = new Date("2023-09-01"); // Tanggal mulai kerja
     const today = new Date();
     
     // Calculate years with months precision
@@ -128,8 +132,8 @@ const AboutPage = () => {
     const experience = Math.floor(monthsDiff / 12);
 
     return {
-      totalProjects: storedProjects.length,
-      totalCertificates: storedCertificates.length,
+      totalProjects: storedProjects.length > 0 ? storedProjects.length : 1, // Fallback ke 1 jika 0
+      totalCertificates: storedCertificates.length > 0 ? storedCertificates.length : 3, // Fallback ke 3 jika 0
       YearExperience: experience >= 2 ? experience : 2 // Minimum 2 years
     };
   }, []);
@@ -162,31 +166,35 @@ const AboutPage = () => {
   const statsData = useMemo(() => [
     {
       icon: Code,
-      color: "#03001C",
+      color: "from-blue-500 to-cyan-500", // Ganti warna untuk tampilan yang lebih dinamis
       value: totalProjects,
       label: "Total Projects",
       description: "Innovative web solutions crafted",
-      
+      animation: "fade-up",
     },
     {
       icon: Award,
-      color: "#03001C",
+      color: "from-purple-500 to-indigo-500", // Ganti warna untuk tampilan yang lebih dinamis
       value: totalCertificates,
       label: "Certificates",
       description: "Professional skills validated",
+      animation: "fade-up",
     },
     {
       icon: Globe,
-      color: "#03001C",
+      color: "from-pink-500 to-red-500", // Ganti warna untuk tampilan yang lebih dinamis
       value: YearExperience,
       label: "Years of Experience",
       description: "Continuous learning journey",
+      animation: "fade-up",
     },
   ], [totalProjects, totalCertificates, YearExperience]);
 
   return (
+    // <div className="h-auto pb-[10%] bg-[#301E67] text-white overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] mt-10 sm-mt-0" id="About">
+    // Mengganti class di atas dengan class di bawah ini untuk spacing yang lebih lebar
     <div
-      className="h-auto pb-[10%] bg-[#301E67] text-white overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] mt-10 sm-mt-0" 
+      className="h-auto pb-[10%] bg-[#301E67] text-white overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%] pt-16 mt-20 sm:mt-16" 
       id="About"
     >
       <Header />
@@ -242,7 +250,7 @@ const AboutPage = () => {
       </div>
 
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 lg:gap-4 lg:px-0 w-full">
-              <a href="https://drive.google.com/drive/folders/1BOm51Grsabb3zj6Xk27K-iRwI1zITcpohttps://drive.google.com/drive/folders/1RIyf4mHaPKemeUJbabAEGJtMIt-uCpCM?usp=sharing" className="w-full lg:w-auto">
+              <a href="https://drive.google.com/drive/folders/1RIyf4mHaPKemeUJbabAEGJtMIt-uCpCM?usp=sharing" className="w-full lg:w-auto">
               <button 
                 data-aos="fade-up"
                 data-aos-duration="800"
