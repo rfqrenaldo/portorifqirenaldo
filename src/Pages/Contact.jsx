@@ -15,7 +15,6 @@ const ContactPage = () => {
     services: []
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', null
 
   useEffect(() => {
     AOS.init({
@@ -61,65 +60,19 @@ const ContactPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
-    try {
-      // Send email using Resend API
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Success
-        setSubmitStatus('success');
-        
-        // Auto-close modal after 2 seconds
-        setTimeout(() => {
-          setFormData({
-            name: '',
-            company: '',
-            role: '',
-            email: '',
-            message: '',
-            services: []
-          });
-          setShowModal(false);
-          setSubmitStatus(null);
-        }, 2000);
-      } else {
-        // Error from API
-        throw new Error(result.message || 'Failed to send email');
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setSubmitStatus('error');
-      
-      // Show fallback option after 3 seconds
-      setTimeout(() => {
-        const fallbackChoice = confirm(
-          'Unable to send email directly. Would you like to open your email client instead?\n\n' +
-          'OK - Open Gmail in browser\n' +
-          'Cancel - Open default email client'
-        );
-
-        if (fallbackChoice !== null) {
-          const emailContent = `Hi Rifqi,
+    // Prepare email content
+    const emailContent = `Hi Rifqi,
 
 I'm reaching out regarding a potential collaboration opportunity.
 
 Contact Details:
 • Name: ${formData.name}
-• Company: ${formData.company}
-• Role: ${formData.role}
+• Company: ${formData.company || 'Not specified'}
+• Role: ${formData.role || 'Not specified'}
 • Email: ${formData.email}
 
 Services Needed: ${formData.services.length > 0 ? formData.services.join(', ') : 'Not specified'}
@@ -132,24 +85,38 @@ Looking forward to hearing from you!
 Best regards,
 ${formData.name}`;
 
-          const subject = `New Contact Form Submission from ${formData.name}`;
+    const subject = `New Contact Form Submission from ${formData.name}`;
 
-          if (fallbackChoice) {
-            // Gmail
-            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=renaldorifqi@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
-            window.open(gmailUrl, '_blank');
-          } else {
-            // Default email client
-            const mailtoLink = `mailto:renaldorifqi@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
-            window.location.href = mailtoLink;
-          }
-        }
-        
-        setSubmitStatus(null);
-      }, 3000);
-    } finally {
+    // Show email client options
+    setTimeout(() => {
+      const useGmail = confirm(
+        'Choose your preferred email client:\n\n' +
+        'OK - Open Gmail in browser\n' +
+        'Cancel - Open default email client (Mail app)'
+      );
+
+      if (useGmail) {
+        // Gmail
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=renaldorifqi@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
+        window.open(gmailUrl, '_blank');
+      } else {
+        // Default email client (iCloud Mail, Outlook, etc.)
+        const mailtoLink = `mailto:renaldorifqi@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent)}`;
+        window.location.href = mailtoLink;
+      }
+
+      // Reset form and close modal
+      setFormData({
+        name: '',
+        company: '',
+        role: '',
+        email: '',
+        message: '',
+        services: []
+      });
+      setShowModal(false);
       setIsSubmitting(false);
-    }
+    }, 500);
   };
 
   return (
@@ -353,34 +320,18 @@ ${formData.name}`;
                     {/* Submit Button */}
                     <button
                       type="submit"
-                      disabled={isSubmitting || submitStatus === 'success'}
-                      className={`w-full px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2 ${
-                        submitStatus === 'success'
-                          ? 'bg-green-500 hover:bg-green-600'
-                          : submitStatus === 'error'
-                          ? 'bg-red-500 hover:bg-red-600'
-                          : 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600'
-                      } disabled:opacity-50 disabled:cursor-not-allowed text-white`}
+                      disabled={isSubmitting}
+                      className="w-full px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed text-white"
                     >
-                      {submitStatus === 'success' ? (
-                        <>
-                          <CheckCircle className="w-5 h-5" />
-                          Email sent successfully!
-                        </>
-                      ) : submitStatus === 'error' ? (
-                        <>
-                          <AlertCircle className="w-5 h-5" />
-                          Failed to send
-                        </>
-                      ) : isSubmitting ? (
+                      {isSubmitting ? (
                         <>
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          Sending email...
+                          Opening email client...
                         </>
                       ) : (
                         <>
                           <Send className="w-5 h-5" />
-                          Send message
+                          Send via Email Client
                         </>
                       )}
                     </button>
